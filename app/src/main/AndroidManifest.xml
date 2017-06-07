@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.easemob.livedemo">
+    package="cn.ucai.live">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -22,20 +22,20 @@
         tools:overrideLibrary="com.ucloud.ulive"/>
 
     <application
-        android:name=".DemoApplication"
+        android:name="cn.ucai.live.LiveApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name="cn.ucai.live.ui.activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             />
         <activity
-            android:name=".ui.activity.LoginActivity"
+            android:name="cn.ucai.live.ui.activity.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -44,39 +44,39 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activity.LiveAudienceActivity"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name="cn.ucai.live.ui.activity.LiveAudienceActivity"
+            android:parentActivityName="cn.ucai.live.ui.activity.MainActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity"/>
+                android:value="cn.ucai.live.ui.activity.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.activity.ChatActivity"
+            android:name="cn.ucai.live.ui.activity.ChatActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.activity.LiveAnchorActivity"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name="cn.ucai.live.ui.activity.LiveAnchorActivity"
+            android:parentActivityName="cn.ucai.live.ui.activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.MainActivity"/>
+                android:value="cn.ucai.live.ui.activity.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.activity.RegisterActivity"
-            android:parentActivityName=".ui.activity.LoginActivity"
+            android:name="cn.ucai.live.ui.activity.RegisterActivity"
+            android:parentActivityName="cn.ucai.live.ui.activity.LoginActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activity.LoginActivity"/>
+                android:value="cn.ucai.live.ui.activity.LoginActivity"/>
         </activity>
         <activity
-            android:name=".ui.activity.SearchActivity"
+            android:name="cn.ucai.live.ui.activity.SearchActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.activity.CreateLiveRoomActivity"
+            android:name="cn.ucai.live.ui.activity.CreateLiveRoomActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
@@ -89,7 +89,7 @@
             android:name="com.hyphenate.chat.EMChatService"
             android:exported="true"/>
 
-        <activity android:name=".ui.activity.AssociateLiveRoomActivity"
+        <activity android:name="cn.ucai.live.ui.activity.AssociateLiveRoomActivity"
             android:screenOrientation="portrait"
             >
         </activity>

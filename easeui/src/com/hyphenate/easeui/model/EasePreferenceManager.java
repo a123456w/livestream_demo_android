@@ -50,7 +50,6 @@ public class EasePreferenceManager {
 
 
 
-
     public void setCurrentUserNick(String nick) {
         UserEditor.putString(SHARED_KEY_CURRENTUSER_NICK, nick);
         UserEditor.apply();

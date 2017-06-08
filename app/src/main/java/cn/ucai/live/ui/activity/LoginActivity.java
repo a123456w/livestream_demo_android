@@ -19,10 +19,14 @@ import android.widget.TextView;
 
 import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
+import cn.ucai.live.data.restapi.LiveManager;
+import cn.ucai.live.data.restapi.LiveService;
+import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.MD5;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.model.EasePreferenceManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -30,6 +34,7 @@ import com.hyphenate.chat.EMClient;
 public class LoginActivity extends BaseActivity {
 
 
+  private static final java.lang.String TAG = "LoginActivity";
   // UI references.
   private AutoCompleteTextView mEmailView;
   private EditText mPasswordView;
@@ -122,8 +127,13 @@ public class LoginActivity extends BaseActivity {
       showProgress(true);
       EMClient.getInstance().login(email.toString(), MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+          LiveHelper.getInstance().syncUserInfo();
+          L.i(TAG,"avatar=_"+ EasePreferenceManager.getInstance().getCurrentUserAvatar()
+                  +"nick=_"+EasePreferenceManager.getInstance().getCurrentUserNick()
+          +"name=_"+EasePreferenceManager.getInstance().getCurrentUsername());
+          startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
+
         }
 
         @Override public void onError(int i, final String s) {

@@ -1,9 +1,15 @@
 package cn.ucai.live.data.restapi;
 
+import java.io.File;
+
+import cn.ucai.live.I;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -58,8 +64,10 @@ public interface LiveService {
             @Query("members")String members
     );
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/uploadChatRoomAvatar?chatRoomId=1
+    @Multipart
     @POST("live/uploadChatRoomAvatar")Call<String> uploadChatRoomAvatar(
-            @Query("chatRoomId")String chatRoomId
+            @Query("chatRoomId")String chatRoomId,
+            @Part MultipartBody.Part file
     );
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/getAllChatRoom
     @GET("live/getAllChatRoom")Call<String> getAllChatRoom();
@@ -78,4 +86,21 @@ public interface LiveService {
             @Query("chatRoomId")String chatRoomId,
             @Query("username")String username
     );
+    //http://101.251.196.90:8080/SuperWeChatServerV2.0/register?m_user_name=11&m_user_nick=111&m_user_password=11
+    @Multipart
+    @POST("register")Call<String> register(
+            @Query(I.User.USER_NAME)String uname,
+            @Query(I.User.NICK)String nick,
+            @Query(I.User.PASSWORD)String password,
+            @Part MultipartBody.Part file
+            );
+    //http://101.251.196.90:8080/SuperWeChatServerV2.0/findUserByUserName?m_user_name=123
+    @GET("findUserByUserName")Call<String> loadUserInfo(
+            @Query(I.User.USER_NAME)String username
+    );
+    //http://101.251.196.90:8080/SuperWeChatServerV2.0/unregister?m_user_name=123123
+    @GET("unregister")Call<String> unRegister(
+            @Query(I.User.USER_NAME)String username
+    );
+
 }

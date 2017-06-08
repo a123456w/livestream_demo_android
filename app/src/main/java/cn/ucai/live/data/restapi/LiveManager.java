@@ -5,15 +5,23 @@ import android.content.pm.PackageManager;
 
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.data.Result;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -31,6 +39,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 
 public class LiveManager {
+    private static final String TAG = "LiveManager";
     private String appkey;
     private ApiService apiService;
     private LiveService liveService;
@@ -196,6 +205,21 @@ public class LiveManager {
         Call<ResponseModule<LiveStatusModule>> respCall = apiService.getStatus(roomId);
         return handleResponseCall(respCall).body().data.status;
     }
+    public boolean register(String uname,String nick,String password,File file) throws IOException, LiveException {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part face = MultipartBody.Part.createFormData("face", file.getName(), requestBody);
+        L.e(TAG,"liveManager.register.uname="+uname);
+        Call<String> register = liveService.register(uname, nick, password, face);
+        Result<User> result = handleResponseCallToResult(register, User.class);
+        L.e(TAG,"liveManager.register.result.getRetData()="+result.getRetData());
+        return result.isRetMsg();
+    }
+    public boolean unRegister(String uname) throws LiveException {
+        Call<String> unregister = liveService.unRegister(uname);
+        Result<User> result = handleResponseCallToResult(unregister, User.class);
+        return result.isRetMsg();
+    }
+
 
     /**
      * 结束直播
@@ -315,4 +339,37 @@ public class LiveManager {
     private RequestBody jsonToRequestBody(String jsonStr){
         return RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
     }
+
+    public User loadUserInfo(String username) throws LiveException {
+        Call<String> stringCall = liveService.loadUserInfo(username);
+        Result<User> result = handleResponseCallToResult(stringCall, User.class);
+        return result.getRetData();
+    }
+    private <T> Result<T>handleResponseCallToResult(Call<String> call,Class<T> clazz) throws LiveException{
+        try {
+            Response<String> response = call.execute();
+            L.e("manager","response="+response);
+            if(!response.isSuccessful()){
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String body = response.body();
+            return ResultUtils.getResultFromJson(body, clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+
+    private <T> Result<List<T>> handleResponseCallToResultList(Call<String> call, Class<T> clazz) throws LiveException{
+        try {
+            Response<String> response = call.execute();
+            if(!response.isSuccessful()){
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String body = response.body();
+            return ResultUtils.getListResultFromJson(body, clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+
 }

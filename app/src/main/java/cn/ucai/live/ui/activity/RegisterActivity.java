@@ -31,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.I;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
@@ -74,6 +75,7 @@ public class RegisterActivity extends BaseActivity {
     private void registers() {
         try {
             EMClient.getInstance().createAccount(username.getText().toString(), MD5.getMessageDigest(password.getText().toString()));
+            LiveHelper.getInstance().setCurrentUserName(username.getText().toString());
                 runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

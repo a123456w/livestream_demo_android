@@ -16,6 +16,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.utils.MD5;
 
@@ -45,7 +47,6 @@ public class LoginActivity extends BaseActivity {
     setContentView(R.layout.activity_login);
     // Set up the login form.
     mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
     mPasswordView = (EditText) findViewById(R.id.password);
     mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -56,6 +57,7 @@ public class LoginActivity extends BaseActivity {
         return false;
       }
     });
+
 
 
     Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
@@ -174,5 +176,13 @@ public class LoginActivity extends BaseActivity {
     }
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+    String usernName = LiveHelper.getInstance().getCurrentUsernName();
+    if(usernName!=null){
+      mEmailView.setText(usernName);
+    }
+  }
 }
 

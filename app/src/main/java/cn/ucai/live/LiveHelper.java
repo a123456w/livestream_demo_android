@@ -108,6 +108,7 @@ public class LiveHelper {
     }
 
 
+
     private void setCurrentAppUserNick(String nickname) {
         getCurrentAppUserInfo().setMUserNick(nickname);
         EasePreferenceManager.getInstance().setCurrentUserNick(nickname);
@@ -130,5 +131,8 @@ public class LiveHelper {
     private String getCurrentUserAvatar() {
         return EasePreferenceManager.getInstance().getCurrentUserAvatar();
     }
-
+    public synchronized void reset() {
+               currentAppUser = null;
+                EasePreferenceManager.getInstance().removeCurrentUserInfo();
+    }
 }

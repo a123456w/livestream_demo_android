@@ -8,6 +8,7 @@ import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.util.EMLog;
@@ -36,6 +37,7 @@ public class LiveHelper {
     private Context appContext;
     private User currentAppUser;
     private Map<Integer, Gift> giftMap;
+    private EaseUI easeui=null;
     private LiveHelper() {
     }
 
@@ -69,7 +71,8 @@ public class LiveHelper {
         model=new LiveModel();
         EaseUI.getInstance().init(context, null);
         EMClient.getInstance().setDebugMode(true);
-
+        easeui=EaseUI.getInstance();
+        setEaseUiProvider();
         EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
             @Override public void onConnected() {
 
@@ -88,6 +91,34 @@ public class LiveHelper {
             }
         });
     }
+
+    private void setEaseUiProvider() {
+        easeui.setUserProfileProvider(new EaseUI.EaseUserProfileProvider() {
+            @Override
+            public EaseUser getUser(String username) {
+                return null;
+            }
+
+            @Override
+            public User getAppUser(String username) {
+                return getAppUserInfo(username);
+            }
+        });
+    }
+
+    private User getAppUserInfo(String username) {
+        User user = null;
+        if(username.equals(EMClient.getInstance().getCurrentUser()))
+            return getCurrentAppUserInfo();
+
+        // if user is not in your contacts, set inital letter for him/her
+        if(user == null){
+            user = new User(username);
+           // EaseCommonUtils.setAppUserInitialLetter(user);
+        }
+        return user;
+    }
+
     protected void onUserException(String exception) {
         Intent intent = new Intent(appContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

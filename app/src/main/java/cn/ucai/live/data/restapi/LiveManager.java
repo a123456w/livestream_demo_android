@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.Result;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
@@ -76,6 +77,11 @@ public class LiveManager {
                 .client(httpClient)
                 .build();
         liveService=retrofit2.create(LiveService.class);
+
+    }
+
+    public List<Gift> loadGiftList() throws LiveException {
+        return  handleResponseCallToResultList(liveService.getAllGifts(), Gift.class).getRetData();
 
     }
 

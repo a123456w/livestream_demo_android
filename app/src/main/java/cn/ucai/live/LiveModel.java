@@ -2,6 +2,10 @@ package cn.ucai.live;
 
 import com.hyphenate.easeui.model.EasePreferenceManager;
 
+import java.util.Map;
+
+import cn.ucai.live.data.local.LiveDao;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.restapi.LiveManager;
 
 /**
@@ -9,6 +13,7 @@ import cn.ucai.live.data.restapi.LiveManager;
  */
 
 public class LiveModel {
+    LiveDao dao=null;
 
     public void LiveManager(){
     }
@@ -19,5 +24,10 @@ public class LiveModel {
 
     public String getCurrentUsernName() {
         return EasePreferenceManager.getInstance().getCurrentUsername();
+    }
+
+    public Map<Integer, Gift> getGiftList() {
+        dao=new LiveDao();
+        return dao.getGiftList();
     }
 }

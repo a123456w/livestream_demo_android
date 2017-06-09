@@ -21,7 +21,7 @@ public class LiveDao {
         LiveDBManager.getInstance().saveContactList(contactList);
     }
 
-    public Map<Integer, Gift> getContactList() {
+    public Map<Integer, Gift> getGiftList() {
         return LiveDBManager.getInstance().getContactList();
     }
 }

@@ -40,6 +40,7 @@ public class LiveApplication extends Application{
     //options.setIMServer("103.241.230.122");
     //options.setImPort(31097);
     LiveHelper.getInstance().init(instance);
+    LiveHelper.getInstance().getGiftListFromServer();
   }
 
 }

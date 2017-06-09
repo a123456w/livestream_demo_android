@@ -12,20 +12,30 @@ import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.util.EMLog;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import cn.ucai.live.data.local.LiveDao;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
+import cn.ucai.live.utils.L;
 
 /**
  * Created by Administrator on 2017/6/8 0008.
  */
 
 public class LiveHelper {
+    private static final String TAG = "LiveHelper";
     private String username;
     private static LiveHelper instance=null;
     private LiveModel model;
     private Context appContext;
     private User currentAppUser;
+    private Map<Integer, Gift> giftMap;
     private LiveHelper() {
     }
 
@@ -134,5 +144,54 @@ public class LiveHelper {
     public synchronized void reset() {
                currentAppUser = null;
                 EasePreferenceManager.getInstance().removeCurrentUserInfo();
+    }
+
+    public void setGiftList(Map<Integer, Gift> list) {
+        if (list == null) {
+            if (giftMap != null) {
+                giftMap.clear();
+            }
+            return;
+        }
+
+        giftMap = list;
+    }
+    public Map<Integer, Gift> getGiftList() {
+        if (giftMap == null) {
+            giftMap = model.getGiftList();
+        }
+
+        // return a empty non-null object to avoid app crash
+        if (giftMap == null) {
+            return new Hashtable<Integer, Gift>();
+        }
+
+        return giftMap;
+    }
+    public void getGiftListFromServer(){
+        if(getGiftList().size()==0){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Map<Integer, Gift> map=new HashMap<>();
+                        List<Gift> gifts = LiveManager.getInstance().loadGiftList();
+                        Log.e(TAG,"getGiftListFromServer.gifts="+gifts);
+                        for (Gift gift : gifts) {
+                            map.put(gift.getId(),gift);
+                        }
+                        //
+                        setGiftList(map);
+                        //
+                        LiveDao dao=new LiveDao();
+                        dao.setGiftList(gifts);
+                        dao.getGiftList();
+                        L.e(TAG,"getGiftListFromServer.dao.getGiftList().size()="+dao.getGiftList().size());
+                    } catch (LiveException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
 }

@@ -15,7 +15,6 @@ public class LiveDbOpenHelper extends SQLiteOpenHelper {
             + LiveDao.GIFT_COLUMN_URL + " TEXT, "
             + LiveDao.GIFT_COLUMN_PRICE + " INTEGER, "
             + LiveDao.GIFT_COLUMN_ID + " INTEGER PRIMARY KEY);";
-
     private static LiveDbOpenHelper instance;
     private static final int versionNumber=1;
     private LiveDbOpenHelper(Context context) {

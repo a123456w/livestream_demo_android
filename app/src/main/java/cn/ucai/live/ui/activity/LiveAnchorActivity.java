@@ -15,6 +15,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ucloud.AVOption;
@@ -25,6 +26,7 @@ import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.User;
 import com.ucloud.ulive.UFilterProfile;
 import com.ucloud.ulive.UNetworkListener;
 import com.ucloud.ulive.UStreamStateListener;
@@ -68,6 +70,12 @@ public class LiveAnchorActivity extends LiveBaseActivity {
             }
         }
     };
+
+    @Override
+    protected void loadAnchor(final String anchorId) {
+        liveRoom.setLiveNick(LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
+
+    }
 
     //203138620012364216
     @Override protected void onActivityCreate(@Nullable Bundle savedInstanceState) {

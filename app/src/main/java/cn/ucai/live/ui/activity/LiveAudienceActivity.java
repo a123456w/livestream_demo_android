@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.LiveConstants;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.data.restapi.model.StatisticsType;
@@ -30,6 +31,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.exceptions.HyphenateException;
 import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
@@ -46,6 +48,29 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.loading_text) TextView loadingText;
     @BindView(R.id.cover_image) ImageView coverView;
+
+    @Override
+    protected void loadAnchor(final String anchorId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user = null;
+                try {
+                    user = LiveManager.getInstance().loadUserInfo(anchorId);
+                    liveRoom.setLiveNick(user.getMUserNick());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initAnchorId();
+                        }
+                    });
+
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     @Override protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_live_audience);

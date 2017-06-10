@@ -27,6 +27,15 @@ public class LiveRoom implements Serializable {
     private String livePullUrl;
     //@SerializedName("liveshow_id")
     //private String showId;
+    private String liveNick;
+
+    public String getLiveNick() {
+        return liveNick;
+    }
+
+    public void setLiveNick(String liveNick) {
+        this.liveNick = liveNick;
+    }
 
     public String getId() {
         return id;

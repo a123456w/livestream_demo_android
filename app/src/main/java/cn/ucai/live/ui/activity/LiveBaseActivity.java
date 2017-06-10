@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.bumptech.glide.Glide;
 import cn.ucai.live.LiveConstants;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.TestAvatarRepository;
@@ -63,6 +64,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @BindView(R.id.tv_username) TextView usernameView;
     @BindView(R.id.eiv_avatar) EaseImageView eiv_avatar;
 
+
     protected String anchorId;
 
     protected LiveRoom liveRoom;
@@ -97,12 +99,24 @@ public abstract class LiveBaseActivity extends BaseActivity {
         chatroomId = liveRoom.getChatroomId();
         anchorId = liveRoom.getAnchorId();
         onActivityCreate(savedInstanceState);
-        usernameView.setText(anchorId);
-        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,anchorId,eiv_avatar);
+        loadAnchor(anchorId);
+        initAnchorId();
         liveIdView.setText(liveId);
         audienceNumView.setText(String.valueOf(liveRoom.getAudienceNum()));
         watchedCount = liveRoom.getAudienceNum();
     }
+
+    public void initAnchorId() {
+
+        if(liveRoom.getLiveNick()==null){
+            usernameView.setText(anchorId);
+        }else{
+            usernameView.setText(liveRoom.getLiveNick());
+        }
+        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,anchorId,eiv_avatar);
+    }
+
+    protected abstract void loadAnchor(String anchorId);
 
     protected Handler handler = new Handler();
 

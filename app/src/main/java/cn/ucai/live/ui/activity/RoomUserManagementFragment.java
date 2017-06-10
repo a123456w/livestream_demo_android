@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -20,6 +21,7 @@ import cn.ucai.live.R;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMChatRoomManager;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,6 +137,7 @@ public class RoomUserManagementFragment extends Fragment {
         @Override public void onBindViewHolder(ManagementViewHolder holder, final int position) {
             final String username = userList.get(position);
             holder.usernickView.setText(username);
+            EaseUserUtils.setAppUserAvatar(getContext(),username,holder.avatar);
             switch (type) {
                 case ADMIN:
                     EMChatRoom chatRoom = chatRoomManager.getChatRoom(chatroomId);
@@ -190,6 +193,7 @@ public class RoomUserManagementFragment extends Fragment {
     static class ManagementViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.txt_usernick) TextView usernickView;
         @BindView(R.id.btn_manager) TextView managerButton;
+        @BindView(R.id.img_avatar) ImageView avatar;
 
         public ManagementViewHolder(View itemView) {
             super(itemView);

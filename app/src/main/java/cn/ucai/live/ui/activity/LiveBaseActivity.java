@@ -23,6 +23,7 @@ import cn.ucai.live.data.TestAvatarRepository;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
+import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.Utils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMChatRoomChangeListener;
@@ -416,8 +417,9 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             @Override public void onSuccess(Void aVoid) {
                 int size = chatroom.getMemberCount();
-                audienceNumView.setText(String.valueOf(size));
-                membersCount = size;
+                membersCount = liveRoom.getAudienceNum();
+                audienceNumView.setText(String.valueOf(membersCount));
+                showMember();
                 //观看人数不包含主播
                 watchedCount = membersCount -1;
                 notifyDataSetChanged();
@@ -427,6 +429,20 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void showMember() {
+        if(chatroom!=null){
+            memberList.addAll(chatroom.getMemberList());
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    audienceNumView.setText(String.valueOf(membersCount));
+                    notifyDataSetChanged();
+                }
+            });
+        }else{
+            L.e(TAG,"chatroom is null");
+        }
     }
 
     private synchronized void onRoomMemberAdded(String name) {
@@ -458,8 +474,8 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private synchronized void onRoomMemberExited(final String name) {
-        memberList.remove(name);
-        membersCount--;
+        if(memberList.remove(name))
+            membersCount--;
         EMLog.e(TAG, name + "exited");
         runOnUiThread(new Runnable() {
             @Override public void run() {

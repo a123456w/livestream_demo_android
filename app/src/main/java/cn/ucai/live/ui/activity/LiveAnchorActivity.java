@@ -174,7 +174,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
         ImageView closeConfirmView =
                 (ImageView) liveEndView.findViewById(R.id.img_finish_confirmed);
         TextView watchedCountView = (TextView) liveEndView.findViewById(R.id.txt_watched_count);
-        usernameView.setText(EMClient.getInstance().getCurrentUser());
+        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
         EaseUserUtils.setAppUserAvatar(LiveAnchorActivity.this,EMClient.getInstance().getCurrentUser(),avatar);
         watchedCountView.setText(watchedCount + "人看过");
 

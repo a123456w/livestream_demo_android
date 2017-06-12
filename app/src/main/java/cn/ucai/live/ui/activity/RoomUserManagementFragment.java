@@ -138,6 +138,7 @@ public class RoomUserManagementFragment extends Fragment {
             final String username = userList.get(position);
             holder.usernickView.setText(username);
             EaseUserUtils.setAppUserAvatar(getContext(),username,holder.avatar);
+            EaseUserUtils.setAppUserNick(username,holder.usernickView);
             switch (type) {
                 case ADMIN:
                     EMChatRoom chatRoom = chatRoomManager.getChatRoom(chatroomId);

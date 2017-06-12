@@ -19,12 +19,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.utils.Utils;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
 import java.util.ArrayList;
@@ -92,7 +96,33 @@ public class RoomUserDetailsDialog extends DialogFragment {
             EaseUserUtils.setAppUserAvatar(getContext(),username,audienceAvatar);
             EaseUserUtils.setAppUserNick(username,usernameView);
         }
+        syncAudience();
         //mentionBtn.setText("@TA");
+    }
+
+    private void syncAudience() {
+        if(LiveHelper.getInstance().getAudience().containsKey(username)){
+            EaseUserUtils.setAppUserNick(username,usernameView);
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user = LiveManager.getInstance().loadUserInfo(username);
+                    LiveHelper.getInstance().saveAudience(user);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            EaseUserUtils.setAppUserNick(username,usernameView);
+                        }
+                    });
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     private void customDialog() {

@@ -1,7 +1,10 @@
 package cn.ucai.live;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.hyphenate.EMConnectionListener;
@@ -11,8 +14,10 @@ import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EasePreferenceManager;
+import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.EMLog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -38,6 +43,7 @@ public class LiveHelper {
     private User currentAppUser;
     private Map<Integer, Gift> giftMap;
     private EaseUI easeui=null;
+    Map<String,User> audience=null;
     private LiveHelper() {
     }
 
@@ -106,17 +112,29 @@ public class LiveHelper {
         });
     }
 
-    private User getAppUserInfo(String username) {
-        User user = null;
-        if(username.equals(EMClient.getInstance().getCurrentUser()))
-            return getCurrentAppUserInfo();
 
+    private User getAppUserInfo(final String username) {
+        User user = null;
+        if(username.equals(EMClient.getInstance().getCurrentUser())){
+            user = getCurrentAppUserInfo();
+        }
+        user=getAudience().get(username);
         // if user is not in your contacts, set inital letter for him/her
         if(user == null){
             user = new User(username);
-           // EaseCommonUtils.setAppUserInitialLetter(user);
+            //EaseCommonUtils.setAppUserInitialLetter(user);
         }
         return user;
+    }
+
+    public Map<String, User> getAudience() {
+        if(audience==null){
+            audience=new Hashtable<>();
+        }
+        return audience;
+    }
+    public void saveAudience(User user){
+        audience.put(user.getMUserName(),user);
     }
 
     protected void onUserException(String exception) {

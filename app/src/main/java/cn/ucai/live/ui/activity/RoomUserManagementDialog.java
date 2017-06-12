@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import cn.ucai.live.R;
+import cn.ucai.live.data.model.LiveRoom;
 
 /**
  * Created by wei on 2017/3/3.
@@ -27,8 +28,15 @@ public class RoomUserManagementDialog extends DialogFragment {
 
     public RoomUserManagementDialog(){}
 
-    public RoomUserManagementDialog(String chatroomId){
+    /*public RoomUserManagementDialog(String chatroomId){
         this.chatroomId = chatroomId;
+    }*/
+    public static RoomUserManagementDialog newInstance(String chatroomId) {
+        RoomUserManagementDialog dialog = new RoomUserManagementDialog();
+        Bundle args = new Bundle();
+        args.putSerializable("chatroomId", chatroomId);
+        dialog.setArguments(args);
+        return dialog;
     }
 
     @Nullable @Override
@@ -47,11 +55,11 @@ public class RoomUserManagementDialog extends DialogFragment {
 
     @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         tabLayout = (TabLayout) getView().findViewById(R.id.tabs);
         viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
-
-
+        if(getArguments()!=null){
+            this.chatroomId=getArguments().getString("chatroomId");
+        }
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
     }

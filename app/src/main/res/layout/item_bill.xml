@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+     android:background="#ccabab7e"
+    android:layout_height="100dp">
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:id="@+id/iv_gift"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/gift_default"/>
+
+    <TextView
+        android:id="@+id/tv_gift_bill_name"
+        android:text="棒棒糖"
+        android:textSize="25dp"
+        android:layout_toRightOf="@id/iv_gift"
+        android:layout_marginLeft="20dp"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/number"
+            android:text="数量："
+            android:textSize="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/gift_number"
+            android:text="20"
+            android:textSize="25dp"
+            android:layout_toRightOf="@id/number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/gprice"
+            android:text="价格："
+            android:textSize="25dp"
+            android:layout_below="@id/number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/gift_gprice"
+            android:text="100"
+            android:textSize="25dp"
+            android:layout_below="@id/gift_number"
+            android:layout_toRightOf="@id/gprice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#fff"
+        android:layout_alignParentBottom="true"/>
+
+
+</RelativeLayout>

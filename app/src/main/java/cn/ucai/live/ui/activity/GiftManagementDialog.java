@@ -1,36 +1,22 @@
 package cn.ucai.live.ui.activity;
 
-import android.annotation.TargetApi;
-import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.DownloadListener;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,13 +24,6 @@ import butterknife.Unbinder;
 import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.data.model.Gift;
-import cn.ucai.live.data.restapi.LiveException;
-import cn.ucai.live.data.restapi.LiveManager;
-import cn.ucai.live.utils.L;
-
-import static android.R.attr.collapseColumns;
-import static android.R.attr.key;
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by wei on 2017/3/3.
@@ -99,8 +78,18 @@ public class GiftManagementDialog extends DialogFragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
+        initListener();
         initView();
 
+    }
+
+    private void initListener() {
+        tvMyBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),BillActivity.class));
+            }
+        });
     }
 
     private void initData() {

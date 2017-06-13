@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.hyphenate.EMConnectionListener;
@@ -267,5 +268,48 @@ public class LiveHelper {
             });
         }
         return giftList;
+    }
+    Map<Integer,GiftBill> map;
+
+    public void setGiftBillMap(int giftId) {
+        if(getGiftBillMap().containsKey(giftId)){
+            getGiftBillMap().get(giftId).setNumber();
+            return;
+        }
+        GiftBill giftBill = new GiftBill();
+        giftBill.setGift(getGiftList().get(giftId));
+        giftBill.setNumber();
+        getGiftBillMap().put(giftId,giftBill);
+    }
+    public Map<Integer,GiftBill> getGiftBillMap(){
+        if(map==null){
+            map=new Hashtable<>();
+        }
+        return map;
+    }
+
+    public class GiftBill  {
+        private Gift gift;
+        private int number;
+
+        public int getNumber() {
+            return number;
+        }
+
+        public void setNumber() {
+            this.number = ++number;
+        }
+
+        public Gift getGift() {
+            return gift;
+        }
+
+        public void setGift(Gift gift) {
+            this.gift = gift;
+        }
+
+
+
+
     }
 }

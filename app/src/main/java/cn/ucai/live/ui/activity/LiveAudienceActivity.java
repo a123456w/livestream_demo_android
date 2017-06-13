@@ -277,6 +277,7 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
             @Override
             public void onClick(View v) {
                 int giftId =(int) v.getTag();
+                LiveHelper.getInstance().setGiftBillMap(giftId);
                 L.e(TAG,"LiveAudienceActivity.giftList....gift="+giftId);
                 onPresentImage(giftId,LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
             }

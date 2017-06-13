@@ -276,9 +276,9 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         dialog.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Gift gift =(Gift) v.getTag();
-                L.e(TAG,"LiveAudienceActivity.giftList....gift="+gift);
-                onPresentImage();
+                int giftId =(int) v.getTag();
+                L.e(TAG,"LiveAudienceActivity.giftList....gift="+giftId);
+                onPresentImage(giftId,LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
             }
         });
         dialog.show(getSupportFragmentManager(), "GiftManagementDialog");

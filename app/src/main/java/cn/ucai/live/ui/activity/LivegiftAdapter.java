@@ -50,7 +50,7 @@ public class LivegiftAdapter extends RecyclerView.Adapter<LivegiftAdapter.GiftHo
         holder.tvGiftName.setText(gift.getGname());
         holder.tvGiftPrice.setText(String.valueOf(gift.getGprice()));
         EaseUserUtils.setGiftAvatar(context,gift.getGurl(),holder.ivGiftThumb);
-        holder.itemView.setTag(gift);
+        holder.itemView.setTag(gift.getId());
         holder.itemView.setOnClickListener(mClickListener);
     }
 

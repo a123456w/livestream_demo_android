@@ -17,6 +17,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.bumptech.glide.Glide;
+
+import cn.ucai.live.I;
 import cn.ucai.live.LiveConstants;
 import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
@@ -98,7 +100,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
     volatile boolean isGiftShowing = false;
     volatile boolean isGift2Showing = false;
-    List<String> toShowList = Collections.synchronizedList(new LinkedList<String>());
+    List<EMMessage> toShowList = Collections.synchronizedList(new LinkedList<EMMessage>());
 
     protected EMChatRoom chatroom;
     private static final int MAX_SIZE = 10;
@@ -515,30 +517,32 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     //@OnClick(R.id.present_image)
-     public void onPresentImage() {
+     public void onPresentImage(int giftId,String nick ) {
       EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
       message.setTo(chatroomId);
+      message.setAttribute(I.User.NICK,nick);
+      message.setAttribute(LiveConstants.CMD_GIFT,giftId);
       EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(LiveConstants.CMD_GIFT);
       message.addBody(cmdMessageBody);
       message.setChatType(EMMessage.ChatType.ChatRoom);
       EMClient.getInstance().chatManager().sendMessage(message);
-      showLeftGiftView(EMClient.getInstance().getCurrentUser());
+      showLeftGiftView(message);
     }
-    protected synchronized void showLeftGiftView(String name) {
+    protected synchronized void showLeftGiftView(EMMessage message) {
         if (!isGift2Showing) {
-            showGift2Direct(name);
+            showGift2Direct(message);
         } else if (!isGiftShowing) {
-            showGift1Direct(name);
+            showGift1Direct(message);
         } else {
-            toShowList.add(name);
+            toShowList.add(message);
         }
     }
 
-    private void showGift1Direct(final String name) {
+    private void showGift1Direct(final EMMessage message) {
         isGiftShowing = true;
-        animateGiftView(name, leftGiftView, new AnimationListener.Stop() {
+        animateGiftView(message, leftGiftView, new AnimationListener.Stop() {
             @Override public void onStop() {
-                String pollName = null;
+                EMMessage pollName = null;
                 try {
                     pollName = toShowList.remove(0);
                 } catch (Exception e) {
@@ -553,11 +557,11 @@ public abstract class LiveBaseActivity extends BaseActivity {
         });
     }
 
-    private void showGift2Direct(final String name) {
+    private void showGift2Direct(final EMMessage message) {
         isGift2Showing = true;
-        animateGiftView(name, leftGiftView2, new AnimationListener.Stop() {
+        animateGiftView(message, leftGiftView2, new AnimationListener.Stop() {
             @Override public void onStop() {
-                String pollName = null;
+                EMMessage pollName = null;
                 try {
                     pollName = toShowList.remove(0);
                 } catch (Exception e) {
@@ -572,11 +576,23 @@ public abstract class LiveBaseActivity extends BaseActivity {
         });
     }
 
-    private void animateGiftView(final String name, final LiveLeftGiftView giftView, final AnimationListener.Stop animationStop) {
+    private void animateGiftView(final EMMessage message, final LiveLeftGiftView giftView, final AnimationListener.Stop animationStop) {
+
         runOnUiThread(new Runnable() {
             @Override public void run() {
+                int giftId=0;
+                String nick=EMClient.getInstance().getCurrentUser();
+                try {
+                    nick = message.getStringAttribute(I.User.NICK);
+                    giftId = message.getIntAttribute(LiveConstants.CMD_GIFT, 0);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
                 giftView.setVisibility(View.VISIBLE);
-                giftView.setName(name);
+                giftView.setName(nick);
+                giftView.setAvatar(message.getFrom());
+                L.e(TAG,"animateGiftView.....giftId="+giftId);
+                giftView.setGiftAvatar(giftId);
                 giftView.setTranslationY(0);
                 ViewAnimator.animate(giftView)
                         .alpha(0, 1)

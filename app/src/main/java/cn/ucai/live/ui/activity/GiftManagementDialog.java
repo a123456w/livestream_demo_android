@@ -61,12 +61,15 @@ public class GiftManagementDialog extends DialogFragment{
     Unbinder unbinder;
     private GridLayoutManager mGridLayoutManager;
     private LivegiftAdapter adapter;
-    List<Gift> list;
+    private static List<Gift> list;
 
 
 
     public static GiftManagementDialog newInstance() {
         GiftManagementDialog dialog = new GiftManagementDialog();
+        if(list!=null){
+            list.clear();
+        }
         return dialog;
     }
 

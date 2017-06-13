@@ -18,10 +18,14 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.EMLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cn.ucai.live.data.local.LiveDao;
 import cn.ucai.live.data.model.Gift;
@@ -44,6 +48,7 @@ public class LiveHelper {
     private Map<Integer, Gift> giftMap;
     private EaseUI easeui=null;
     Map<String,User> audience=null;
+    List<Gift> giftList;
     private LiveHelper() {
     }
 
@@ -212,7 +217,7 @@ public class LiveHelper {
 
         // return a empty non-null object to avoid app crash
         if (giftMap == null) {
-            return new Hashtable<Integer, Gift>();
+            giftMap=new Hashtable<Integer, Gift>();
         }
 
         return giftMap;
@@ -242,5 +247,25 @@ public class LiveHelper {
                 }
             }).start();
         }
+    }
+
+    public List<Gift> getGiftLists() {
+        if(giftList==null){
+            giftList=new ArrayList<>();
+        }
+        if(getGiftList().size()>0){
+            Iterator<Integer> it =getGiftList().keySet().iterator();
+            while (it.hasNext()){
+                Integer key = it.next();
+                giftList.add(giftMap.get(key));
+            }
+            Collections.sort(giftList, new Comparator<Gift>() {
+                @Override
+                public int compare(Gift o1, Gift o2) {
+                    return o1.getGprice()-o2.getGprice();
+                }
+            });
+        }
+        return giftList;
     }
 }

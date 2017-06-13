@@ -57,7 +57,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @BindView(R.id.horizontal_recycle_view) RecyclerView horizontalRecyclerView;
     @BindView(R.id.audience_num) TextView audienceNumView;
     //@BindView(R.id.new_messages_warn) ImageView newMsgNotifyImage;
-
+    @BindView(R.id.tv_GiftList) ImageView mivGiftList;
     @BindView(R.id.user_manager_image) ImageView userManagerView;
     @BindView(R.id.switch_camera_image) ImageView switchCameraView;
     @BindView(R.id.like_image) ImageView likeImageView;

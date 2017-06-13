@@ -83,7 +83,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
         setContentView(R.layout.activity_live_anchor);
         ButterKnife.bind(this);
         initLiveEnv();
-
+        mivGiftList.setVisibility(View.GONE);
         startLive();
     }
 

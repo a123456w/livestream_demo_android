@@ -65,6 +65,11 @@ public class GiftManagementDialog extends DialogFragment{
 
 
 
+    View.OnClickListener ClickListener;
+
+    public void setClickListener(View.OnClickListener clickListener) {
+        this.ClickListener = clickListener;
+    }
     public static GiftManagementDialog newInstance() {
         GiftManagementDialog dialog = new GiftManagementDialog();
         if(list!=null){
@@ -72,6 +77,7 @@ public class GiftManagementDialog extends DialogFragment{
         }
         return dialog;
     }
+
 
     @Nullable
     @Override
@@ -86,6 +92,7 @@ public class GiftManagementDialog extends DialogFragment{
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(wlp);
         unbinder = ButterKnife.bind(this, view);
+
         return view;
     }
     @Override
@@ -93,6 +100,7 @@ public class GiftManagementDialog extends DialogFragment{
         super.onActivityCreated(savedInstanceState);
         initData();
         initView();
+
     }
 
     private void initData() {
@@ -104,7 +112,7 @@ public class GiftManagementDialog extends DialogFragment{
 
     private void initView() {
         mGridLayoutManager = new GridLayoutManager(getContext(), 4);
-        adapter = new LivegiftAdapter(list, getContext());
+        adapter = new LivegiftAdapter(list, getContext(),ClickListener);
         rvGift.setLayoutManager(mGridLayoutManager);
         rvGift.setAdapter(adapter);
     }

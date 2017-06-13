@@ -1,6 +1,8 @@
 package cn.ucai.live.data.model;
 
-public class Gift {
+import java.io.Serializable;
+
+public class Gift implements Serializable {
     private Integer id;
 
     private String gname;

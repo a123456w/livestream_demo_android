@@ -1,6 +1,8 @@
 package cn.ucai.live.ui.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,11 +22,17 @@ import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.TestAvatarRepository;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.ui.widget.BarrageLayout;
+import cn.ucai.live.ui.widget.LiveLeftGiftView;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.Utils;
+
+import com.github.florent37.viewanimator.AnimationListener;
+import com.github.florent37.viewanimator.ViewAnimator;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMChatRoomChangeListener;
 import com.hyphenate.EMMessageListener;
@@ -37,7 +45,10 @@ import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,15 +56,15 @@ import java.util.List;
  * Created by wei on 2016/6/12.
  */
 public abstract class LiveBaseActivity extends BaseActivity {
-    protected static final String TAG = "LiveActivity";
+    protected static final String TAG = "LiveBaseActivity";
 
-    //@BindView(R.id.left_gift_view1) LiveLeftGiftView leftGiftView;
-    //@BindView(R.id.left_gift_view2) LiveLeftGiftView leftGiftView2;
+    @BindView(R.id.left_gift_view1) LiveLeftGiftView leftGiftView;
+    @BindView(R.id.left_gift_view2) LiveLeftGiftView leftGiftView2;
     @BindView(R.id.message_view) RoomMessagesView messageView;
     @BindView(R.id.periscope_layout) PeriscopeLayout periscopeLayout;
     @BindView(R.id.bottom_bar) View bottomBar;
 
-    //@BindView(R.id.barrage_layout) BarrageLayout barrageLayout;
+    @BindView(R.id.barrage_layout) BarrageLayout barrageLayout;
     @BindView(R.id.horizontal_recycle_view) RecyclerView horizontalRecyclerView;
     @BindView(R.id.audience_num) TextView audienceNumView;
     //@BindView(R.id.new_messages_warn) ImageView newMsgNotifyImage;
@@ -61,7 +72,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @BindView(R.id.user_manager_image) ImageView userManagerView;
     @BindView(R.id.switch_camera_image) ImageView switchCameraView;
     @BindView(R.id.like_image) ImageView likeImageView;
-    @BindView(R.id.txt_live_id) TextView liveIdView;
+    @BindView(R.id.txt_live_id) TextView   liveIdView;
     @BindView(R.id.tv_username) TextView usernameView;
     @BindView(R.id.eiv_avatar) EaseImageView eiv_avatar;
 
@@ -85,9 +96,9 @@ public abstract class LiveBaseActivity extends BaseActivity {
     protected boolean isMessageListInited;
     protected EMChatRoomChangeListener chatRoomChangeListener;
 
-    //volatile boolean isGiftShowing = false;
-    //volatile boolean isGift2Showing = false;
-    //List<String> toShowList = Collections.synchronizedList(new LinkedList<String>());
+    volatile boolean isGiftShowing = false;
+    volatile boolean isGift2Showing = false;
+    List<String> toShowList = Collections.synchronizedList(new LinkedList<String>());
 
     protected EMChatRoom chatroom;
     private static final int MAX_SIZE = 10;
@@ -503,15 +514,88 @@ public abstract class LiveBaseActivity extends BaseActivity {
         managementDialog.show(getSupportFragmentManager(), "RoomUserManagementDialog");
     }
 
-    //@OnClick(R.id.present_image) void onPresentImageClick() {
-    //  EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
-    //  message.setTo(chatroomId);
-    //  EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(LiveConstants.CMD_GIFT);
-    //  message.addBody(cmdMessageBody);
-    //  message.setChatType(EMMessage.ChatType.ChatRoom);
-    //  EMClient.getInstance().chatManager().sendMessage(message);
-    //  showLeftGiftView(EMClient.getInstance().getCurrentUser());
-    //}
+    //@OnClick(R.id.present_image)
+     public void onPresentImage() {
+      EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
+      message.setTo(chatroomId);
+      EMCmdMessageBody cmdMessageBody = new EMCmdMessageBody(LiveConstants.CMD_GIFT);
+      message.addBody(cmdMessageBody);
+      message.setChatType(EMMessage.ChatType.ChatRoom);
+      EMClient.getInstance().chatManager().sendMessage(message);
+      showLeftGiftView(EMClient.getInstance().getCurrentUser());
+    }
+    protected synchronized void showLeftGiftView(String name) {
+        if (!isGift2Showing) {
+            showGift2Direct(name);
+        } else if (!isGiftShowing) {
+            showGift1Direct(name);
+        } else {
+            toShowList.add(name);
+        }
+    }
+
+    private void showGift1Direct(final String name) {
+        isGiftShowing = true;
+        animateGiftView(name, leftGiftView, new AnimationListener.Stop() {
+            @Override public void onStop() {
+                String pollName = null;
+                try {
+                    pollName = toShowList.remove(0);
+                } catch (Exception e) {
+
+                }
+                if (pollName != null) {
+                    showGift1Direct(pollName);
+                } else {
+                    isGiftShowing = false;
+                }
+            }
+        });
+    }
+
+    private void showGift2Direct(final String name) {
+        isGift2Showing = true;
+        animateGiftView(name, leftGiftView2, new AnimationListener.Stop() {
+            @Override public void onStop() {
+                String pollName = null;
+                try {
+                    pollName = toShowList.remove(0);
+                } catch (Exception e) {
+
+                }
+                if (pollName != null) {
+                    showGift2Direct(pollName);
+                } else {
+                    isGift2Showing = false;
+                }
+            }
+        });
+    }
+
+    private void animateGiftView(final String name, final LiveLeftGiftView giftView, final AnimationListener.Stop animationStop) {
+        runOnUiThread(new Runnable() {
+            @Override public void run() {
+                giftView.setVisibility(View.VISIBLE);
+                giftView.setName(name);
+                giftView.setTranslationY(0);
+                ViewAnimator.animate(giftView)
+                        .alpha(0, 1)
+                        .translationX(-giftView.getWidth(), 0)
+                        .duration(600)
+                        .thenAnimate(giftView)
+                        .alpha(1, 0)
+                        .translationY(-1.5f * giftView.getHeight())
+                        .duration(800)
+                        .onStop(animationStop)
+                        .startDelay(2000)
+                        .start();
+                ViewAnimator.animate(giftView.getGiftImageView())
+                        .translationX(-giftView.getGiftImageView().getX(), 0)
+                        .duration(1100)
+                        .start();
+            }
+        });
+    }
 
     //@OnClick(R.id.chat_image) void onChatImageClick() {
     //  ConversationListFragment fragment = ConversationListFragment.newInstance(anchorId, false);
@@ -524,6 +608,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @Override protected void onResume() {
         super.onResume();
     }
+
+
+
+
 
     private class AvatarAdapter extends RecyclerView.Adapter<AvatarViewHolder> {
         List<String> namelist;

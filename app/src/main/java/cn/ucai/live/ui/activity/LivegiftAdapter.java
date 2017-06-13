@@ -1,12 +1,16 @@
 package cn.ucai.live.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMMessage;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
 import java.util.List;
@@ -24,10 +28,16 @@ public class LivegiftAdapter extends RecyclerView.Adapter<LivegiftAdapter.GiftHo
     List<Gift> list;
     Context context;
 
-    public LivegiftAdapter(List<Gift> list, Context context) {
+
+
+    View.OnClickListener mClickListener;
+
+    public LivegiftAdapter(List<Gift> list, Context context,View.OnClickListener mClickListener) {
         this.list = list;
         this.context = context;
+        this.mClickListener=mClickListener;
     }
+
 
     @Override
     public GiftHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,11 +46,14 @@ public class LivegiftAdapter extends RecyclerView.Adapter<LivegiftAdapter.GiftHo
 
     @Override
     public void onBindViewHolder(GiftHolder holder, int position) {
-        Gift gift = list.get(position);
+        final Gift gift = list.get(position);
         holder.tvGiftName.setText(gift.getGname());
         holder.tvGiftPrice.setText(String.valueOf(gift.getGprice()));
         EaseUserUtils.setGiftAvatar(context,gift.getGurl(),holder.ivGiftThumb);
+        holder.itemView.setTag(gift);
+        holder.itemView.setOnClickListener(mClickListener);
     }
+
 
     @Override
     public int getItemCount() {

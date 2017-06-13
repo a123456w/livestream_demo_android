@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.LiveConstants;
 import cn.ucai.live.LiveHelper;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.data.restapi.model.StatisticsType;
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide;
 import cn.ucai.live.R;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
+import cn.ucai.live.utils.L;
 
 import com.hyphenate.EMError;
 import com.hyphenate.EMValueCallBack;
@@ -271,6 +273,14 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     private Thread sendPraiseThread;
     @OnClick(R.id.tv_GiftList)void giftList(){
         GiftManagementDialog dialog = GiftManagementDialog.newInstance();
+        dialog.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Gift gift =(Gift) v.getTag();
+                L.e(TAG,"LiveAudienceActivity.giftList....gift="+gift);
+                onPresentImage();
+            }
+        });
         dialog.show(getSupportFragmentManager(), "GiftManagementDialog");
     }
     /**

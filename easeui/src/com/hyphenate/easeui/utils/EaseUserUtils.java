@@ -70,6 +70,15 @@ public class EaseUserUtils {
             Glide.with(context).load(R.drawable.ease_default_avatar).into(imageView);
         }
     }
+    public static void setGiftAvatar(Context context, String url, ImageView imageView){
+        if(url!=null){
+            try {
+                Glide.with(context).load(url).into(imageView);
+            } catch (Exception e) {
+                e.getMessage();
+            }
+        }
+    }
 
     /**
      * set user's nickname

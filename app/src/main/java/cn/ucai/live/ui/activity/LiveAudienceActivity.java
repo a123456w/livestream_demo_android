@@ -2,6 +2,7 @@ package cn.ucai.live.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -260,6 +261,7 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
 
 
 
+
     @OnClick(R.id.img_bt_close) void close() {
         finish();
     }
@@ -267,6 +269,10 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     int praiseCount;
     final int praiseSendDelay = 4 * 1000;
     private Thread sendPraiseThread;
+    @OnClick(R.id.tv_GiftList)void giftList(){
+        GiftManagementDialog dialog = GiftManagementDialog.newInstance();
+        dialog.show(getSupportFragmentManager(), "GiftManagementDialog");
+    }
     /**
      * 点赞
      */

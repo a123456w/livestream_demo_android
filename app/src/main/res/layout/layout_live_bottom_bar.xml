@@ -25,6 +25,7 @@
         />
 
     <RelativeLayout
+        android:id="@+id/RelativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
@@ -45,5 +46,13 @@
             android:visibility="invisible"
             />
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/tv_GiftList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/RelativeLayout"
+        android:layout_centerVertical="true"
+        android:paddingRight="10dp"
+        android:src="@drawable/live_button_present_selector"/>
 
 </RelativeLayout>

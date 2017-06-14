@@ -52,6 +52,19 @@
       android:layout_alignParentRight="true"
       android:layout_margin="20dp"
       />
+
+  <android.support.design.widget.FloatingActionButton
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:clickable="true"
+      app:fabSize="normal"
+      app:backgroundTint="#19A3FF"
+      android:id="@+id/FABPersonal"
+      android:src="@drawable/ease_contact_list_normal"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginBottom="80dp"
+      android:layout_marginRight="20dp" />
   <!--app:srcCompat="@color/holo_blue_bright"-->
 
 </RelativeLayout>

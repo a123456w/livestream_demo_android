@@ -36,6 +36,11 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(this, CreateLiveRoomActivity.class));
     }
 
+    @OnClick(R.id.FABPersonal)
+    void createPersonal() {
+        startActivity(new Intent(this, LivePersonalActivity.class));
+    }
+
     @OnClick(R.id.txt_logout) void logout() {
         EMClient.getInstance().logout(false, new EMCallBack() {
             @Override public void onSuccess() {

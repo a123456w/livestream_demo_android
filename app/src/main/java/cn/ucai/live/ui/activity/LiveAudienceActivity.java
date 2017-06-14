@@ -2,6 +2,7 @@ package cn.ucai.live.ui.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -31,6 +32,10 @@ import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.utils.L;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.hyphenate.EMError;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
@@ -52,10 +57,19 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     private UVideoView mVideoView;
     private UMediaProfile profile;
 
-    @BindView(R.id.loading_layout) RelativeLayout loadingLayout;
-    @BindView(R.id.progress_bar) ProgressBar progressBar;
-    @BindView(R.id.loading_text) TextView loadingText;
-    @BindView(R.id.cover_image) ImageView coverView;
+    @BindView(R.id.loading_layout)
+    RelativeLayout loadingLayout;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.loading_text)
+    TextView loadingText;
+    @BindView(R.id.cover_image)
+    ImageView coverView;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void loadAnchor(final String anchorId) {
@@ -80,7 +94,8 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         }).start();
     }
 
-    @Override protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_live_audience);
         ButterKnife.bind(this);
 
@@ -94,20 +109,23 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
 
         connect();
     }
-    private void connect(){
+
+    private void connect() {
         connectChatServer();
     }
 
-    private void connectChatServer(){
+    private void connectChatServer() {
 
         executeTask(new ThreadPoolManager.Task<LiveStatusModule.LiveStatus>() {
-            @Override public LiveStatusModule.LiveStatus onRequest() throws HyphenateException {
+            @Override
+            public LiveStatusModule.LiveStatus onRequest() throws HyphenateException {
                 return LiveManager.getInstance().getLiveRoomStatus(liveId);
             }
 
-            @Override public void onSuccess(LiveStatusModule.LiveStatus status) {
+            @Override
+            public void onSuccess(LiveStatusModule.LiveStatus status) {
                 loadingLayout.setVisibility(View.INVISIBLE);
-                switch (status){
+                switch (status) {
                     case completed: //complete状态允许用户加入聊天室
                         showLongToast("直播已结束");
                     case ongoing:
@@ -125,7 +143,8 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
 
             }
 
-            @Override public void onError(HyphenateException exception) {
+            @Override
+            public void onError(HyphenateException exception) {
                 loadingLayout.setVisibility(View.INVISIBLE);
                 showToast("加载失败");
             }
@@ -137,27 +156,29 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         EMClient.getInstance()
                 .chatroomManager()
                 .joinChatRoom(chatroomId, new EMValueCallBack<EMChatRoom>() {
-                    @Override public void onSuccess(EMChatRoom emChatRoom) {
+                    @Override
+                    public void onSuccess(EMChatRoom emChatRoom) {
                         chatroom = emChatRoom;
                         addChatRoomChangeListener();
                         onMessageListInit();
                         //postUserChangeEvent(StatisticsType.JOIN, EMClient.getInstance().getCurrentUser());
                     }
 
-                    @Override public void onError(int i, String s) {
-                        if(i == EMError.GROUP_PERMISSION_DENIED || i == EMError.CHATROOM_PERMISSION_DENIED){
+                    @Override
+                    public void onError(int i, String s) {
+                        if (i == EMError.GROUP_PERMISSION_DENIED || i == EMError.CHATROOM_PERMISSION_DENIED) {
                             showLongToast("你没有权限加入此房间");
                             finish();
-                        }else if(i == EMError.CHATROOM_MEMBERS_FULL){
+                        } else if (i == EMError.CHATROOM_MEMBERS_FULL) {
                             showLongToast("房间成员已满");
                             finish();
                         }
-                        showLongToast("加入聊天室失败: " +s);
+                        showLongToast("加入聊天室失败: " + s);
                     }
                 });
     }
 
-    private void connectLiveStream(){
+    private void connectLiveStream() {
         profile = new UMediaProfile();
         profile.setInteger(UMediaProfile.KEY_START_ON_PREPARED, 1);
         profile.setInteger(UMediaProfile.KEY_ENABLE_BACKGROUND_PLAY, 0);
@@ -179,14 +200,15 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         mVideoView.setOnPlayerStateListener(this);//set before setVideoPath
         mVideoView.setVideoPath(liveRoom.getLivePullUrl());
 
-        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         //if(getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE){
-            messageView.getInputView().requestFocus();
-            messageView.getInputView().requestFocusFromTouch();
+        messageView.getInputView().requestFocus();
+        messageView.getInputView().requestFocusFromTouch();
         //}
     }
 
-    @Override protected void onResume() {
+    @Override
+    protected void onResume() {
         super.onResume();
         mVideoView.onResume();
         if (isMessageListInited) messageView.refresh();
@@ -195,24 +217,32 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         EMClient.getInstance().chatManager().addMessageListener(msgListener);
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
         mVideoView.onPause();
     }
 
-    @Override public void onStop() {
-        super.onStop();
+    @Override
+    public void onStop() {
+        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // unregister this event listener when this activity enters the
         // background
         EMClient.getInstance().chatManager().removeMessageListener(msgListener);
 
         // 把此activity 从foreground activity 列表里移除
         EaseUI.getInstance().popActivity(this);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
-        if(isMessageListInited) {
+        if (isMessageListInited) {
             EMClient.getInstance().chatroomManager().leaveChatRoom(chatroomId);
 
             //postUserChangeEvent(StatisticsType.LEAVE, EMClient.getInstance().getCurrentUser());
@@ -227,7 +257,8 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         mVideoView.onDestroy();
     }
 
-    @Override public void onPlayerStateChanged(State state, int i, Object o) {
+    @Override
+    public void onPlayerStateChanged(State state, int i, Object o) {
         switch (state) {
             case START:
                 isSteamConnected = true;
@@ -245,10 +276,12 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         }
     }
 
-    @Override public void onPlayerInfo(Info info, int extra1, Object o) {
+    @Override
+    public void onPlayerInfo(Info info, int extra1, Object o) {
     }
 
-    @Override public void onPlayerError(Error error, int extra1, Object o) {
+    @Override
+    public void onPlayerError(Error error, int extra1, Object o) {
         isSteamConnected = false;
         isReconnecting = false;
         switch (error) {
@@ -267,23 +300,24 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     }
 
 
-
-
-    @OnClick(R.id.img_bt_close) void close() {
+    @OnClick(R.id.img_bt_close)
+    void close() {
         finish();
     }
 
     int praiseCount;
     final int praiseSendDelay = 4 * 1000;
     private Thread sendPraiseThread;
-    @OnClick(R.id.tv_GiftList)void giftList(){
+
+    @OnClick(R.id.tv_GiftList)
+    void giftList() {
         GiftManagementDialog dialog = GiftManagementDialog.newInstance();
         dialog.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int giftId =(int) v.getTag();
+                int giftId = (int) v.getTag();
                 LiveHelper.getInstance().setGiftBillMap(giftId);
-                L.e(TAG,"LiveAudienceActivity.giftList....gift="+giftId);
+                L.e(TAG, "LiveAudienceActivity.giftList....gift=" + giftId);
                 showSendDialogPro(giftId);
             }
         });
@@ -292,11 +326,17 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
 
     private void showSendDialogPro(int giftId) {
         if (EasePreferenceManager.getInstance().getIsShowDialog()) {
-            onPresentImage(giftId, LiveHelper.getInstance()
-                    .getCurrentAppUserInfo().getMUserNick());
+            sendGift(giftId);
         } else {
             showSendDialog(giftId);
         }
+    }
+
+    private void sendGift(int giftId) {
+        Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
+
+        onPresentImage(giftId, LiveHelper.getInstance()
+                .getCurrentAppUserInfo().getMUserNick());
     }
 
     private void showSendDialog(final int giftId) {
@@ -315,7 +355,7 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        onPresentImage(giftId, LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
+                        sendGift(giftId);
                     }
                 })
                 .setView(cb)
@@ -327,24 +367,27 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
             }
         });
     }
+
     /**
      * 点赞
      */
-    @OnClick(R.id.like_image) void Praise() {
+    @OnClick(R.id.like_image)
+    void Praise() {
         periscopeLayout.addHeart();
         synchronized (this) {
             ++praiseCount;
         }
-        if(sendPraiseThread == null){
+        if (sendPraiseThread == null) {
             sendPraiseThread = new Thread(new Runnable() {
-                @Override public void run() {
-                    while(!isFinishing()){
+                @Override
+                public void run() {
+                    while (!isFinishing()) {
                         int count = 0;
-                        synchronized (LiveAudienceActivity.this){
+                        synchronized (LiveAudienceActivity.this) {
                             count = praiseCount;
                             praiseCount = 0;
                         }
-                        if(count > 0) {
+                        if (count > 0) {
                             sendPraiseMessage(count);
                             try {
                                 LiveManager.getInstance().postStatistics(StatisticsType.PRAISE, liveId, count);
@@ -385,18 +428,20 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     /**
      * 重连到直播server
      */
-    private void reconnect(){
-        if(isSteamConnected || isReconnecting)
+    private void reconnect() {
+        if (isSteamConnected || isReconnecting)
             return;
-        if(reconnectThread != null &&reconnectThread.isAlive())
+        if (reconnectThread != null && reconnectThread.isAlive())
             return;
 
-        reconnectThread = new Thread(){
-            @Override public void run() {
-                while (!isFinishing() && !isSteamConnected){
+        reconnectThread = new Thread() {
+            @Override
+            public void run() {
+                while (!isFinishing() && !isSteamConnected) {
                     runOnUiThread(new Runnable() {
-                        @Override public void run() {
-                            if(!isReconnecting) {
+                        @Override
+                        public void run() {
+                            if (!isReconnecting) {
                                 isReconnecting = true;
                                 connectLiveStream();
                             }
@@ -420,4 +465,38 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     }
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("LiveAudience Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
 }

@@ -39,4 +39,5 @@
         completions."
     </string>
     <string name="msg_1">msg</string>
+    <string name="no_money">余额不足</string>
 </resources>

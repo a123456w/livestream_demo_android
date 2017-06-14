@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import cn.ucai.live.data.Result;
 import cn.ucai.live.data.local.LiveDao;
 import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.data.model.Wallet;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;

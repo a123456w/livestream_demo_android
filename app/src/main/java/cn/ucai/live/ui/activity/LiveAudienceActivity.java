@@ -20,7 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.live.LiveConstants;
 import cn.ucai.live.LiveHelper;
+import cn.ucai.live.data.Result;
 import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.data.model.Wallet;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.data.restapi.model.StatisticsType;
@@ -30,6 +32,7 @@ import com.bumptech.glide.Glide;
 import cn.ucai.live.R;
 import cn.ucai.live.ThreadPoolManager;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
+import cn.ucai.live.utils.CommonUtils;
 import cn.ucai.live.utils.L;
 
 import com.google.android.gms.appindexing.Action;
@@ -332,11 +335,49 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         }
     }
 
-    private void sendGift(int giftId) {
+    private void sendGift(final int giftId) {
         Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    boolean isSuccess = false;
+                    Result<Wallet> result = LiveManager.getInstance().givingGift(
+                            LiveHelper.getInstance().getCurrentAppUserInfo().getMUserName()
+                            , chatroomId, giftId, 1
+                    );
+                    if (result != null) {
+                        if (result.isRetMsg()) {
+                            isSuccess = true;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onPresentImage(giftId, LiveHelper.getInstance()
+                                            .getCurrentAppUserInfo().getMUserNick());
+                                }
+                            });
+                        }
+                    }
+                    if (!isSuccess) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommonUtils.showShortToast(R.string.no_money);
+                            }
+                        });
+                    }
 
-        onPresentImage(giftId, LiveHelper.getInstance()
-                .getCurrentAppUserInfo().getMUserNick());
+                } catch (final LiveException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            CommonUtils.showLongToast(e.getMessage());
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     private void showSendDialog(final int giftId) {

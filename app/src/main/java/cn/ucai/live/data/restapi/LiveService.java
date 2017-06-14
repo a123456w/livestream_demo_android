@@ -52,7 +52,7 @@ public interface LiveService {
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/recharge?uname=1&rmb=1
     @GET("live/recharge")Call<String> recharge(
             @Query("uname")String uname,
-            @Query("rmb")String rmb
+            @Query("rmb") Integer rmb
     );
     //http://101.251.196.90:8080/SuperWeChatServerV2.0/live/createChatRoom?auth=1&name=1&description=1&owner=1&maxusers=300&members=1
     @GET("live/createChatRoom")Call<String> createChatRoom(

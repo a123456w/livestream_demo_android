@@ -362,6 +362,11 @@ public class LiveManager {
         L.e(TAG, "username=" + username);
         return handleResponseCallToResult(liveService.getBalance(username), Wallet.class);
     }
+
+    public Result<Wallet> recharge(String username, int rmb) throws LiveException {
+        L.e(TAG, "username=" + username);
+        return handleResponseCallToResult(liveService.recharge(username, rmb), Wallet.class);
+    }
     private <T> Result<T>handleResponseCallToResult(Call<String> call,Class<T> clazz) throws LiveException{
         try {
             Response<String> response = call.execute();

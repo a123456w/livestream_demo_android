@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
@@ -46,6 +47,10 @@ public class GiftManagementDialog extends DialogFragment{
 
     View.OnClickListener ClickListener;
 
+    @OnClick(R.id.tv_recharge)
+    void recharge() {
+        startActivity(new Intent(getContext(), RechargeActivity.class));
+    }
     public void setClickListener(View.OnClickListener clickListener) {
         this.ClickListener = clickListener;
     }

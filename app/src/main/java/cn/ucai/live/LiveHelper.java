@@ -251,21 +251,24 @@ public class LiveHelper {
     }
 
     public List<Gift> getGiftLists() {
-        if(giftList==null){
-            giftList=new ArrayList<>();
-        }
-        if(getGiftList().size()>0){
-            Iterator<Integer> it =getGiftList().keySet().iterator();
-            while (it.hasNext()){
-                Integer key = it.next();
-                giftList.add(giftMap.get(key));
-            }
-            Collections.sort(giftList, new Comparator<Gift>() {
-                @Override
-                public int compare(Gift o1, Gift o2) {
-                    return o1.getGprice()-o2.getGprice();
+        if(giftList==null) {
+            giftList = new ArrayList<>();
+            if (getGiftList().size() > 0) {
+                Iterator<Integer> it = getGiftList().keySet().iterator();
+                while (it.hasNext()) {
+                    Integer key = it.next();
+                    giftList.add(giftMap.get(key));
                 }
-            });
+                Collections.sort(giftList, new Comparator<Gift>() {
+                    @Override
+                    public int compare(Gift o1, Gift o2) {
+                        return o1.getGprice() - o2.getGprice();
+                    }
+                });
+            }
+        }
+        if(giftList==null) {
+            giftList = new ArrayList<>();
         }
         return giftList;
     }

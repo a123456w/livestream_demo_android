@@ -51,9 +51,6 @@ public class GiftManagementDialog extends DialogFragment{
     }
     public static GiftManagementDialog newInstance() {
         GiftManagementDialog dialog = new GiftManagementDialog();
-        if(list!=null){
-            list.clear();
-        }
         return dialog;
     }
 

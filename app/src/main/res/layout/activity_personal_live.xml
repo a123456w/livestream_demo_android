@@ -4,10 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="个人资料页面"
-        android:textSize="50dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
+    <include layout="@layout/em_user_profile" />
 </LinearLayout>

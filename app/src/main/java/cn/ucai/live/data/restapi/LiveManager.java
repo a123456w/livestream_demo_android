@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.data.Result;
 import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
@@ -355,6 +356,11 @@ public class LiveManager {
 
     public Result<Wallet> givingGift(String username, String anchor, int giftId, int num) throws LiveException {
         return handleResponseCallToResult(liveService.givingGifts(username, anchor, giftId, num), Wallet.class);
+    }
+
+    public Result<Wallet> getBalance(String username) throws LiveException {
+        L.e(TAG, "username=" + username);
+        return handleResponseCallToResult(liveService.getBalance(username), Wallet.class);
     }
     private <T> Result<T>handleResponseCallToResult(Call<String> call,Class<T> clazz) throws LiveException{
         try {

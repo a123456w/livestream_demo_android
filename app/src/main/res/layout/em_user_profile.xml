@@ -82,6 +82,62 @@
                 android:layout_marginRight="20dp"
                 android:background="@color/black3" />
 
+            <LinearLayout
+                android:id="@+id/layout_userinfo_name"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/setting_item_selector">
+
+                <TextView
+                    style="@style/list_txt_Style_without_nopadding"
+                    android:layout_alignParentLeft="true"
+                    android:text="账号"
+                    android:layout_width="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_userinfo_name"
+                    style="@style/list_txt_Style_without_nopadding_right"
+                    android:layout_alignParentRight="true"
+                    android:text="未设置"
+                    android:layout_width="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.3dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/black3" />
+
+            <LinearLayout
+                android:id="@+id/money"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/setting_item_selector">
+
+                <TextView
+                    style="@style/list_txt_Style_without_nopadding"
+                    android:layout_alignParentLeft="true"
+                    android:text="余额"
+                    android:layout_width="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_userinfo_money"
+                    style="@style/list_txt_Style_without_nopadding_right"
+                    android:layout_alignParentRight="true"
+                    android:text="100"
+                    android:layout_width="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.3dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/black3" />
+
             <TextView
                 android:id="@+id/tv_userinfo_address"
                 style="@style/list_txt_Style_without_right"

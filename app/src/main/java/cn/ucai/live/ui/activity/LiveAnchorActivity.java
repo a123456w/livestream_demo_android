@@ -130,6 +130,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
 
         if (!isStarted) {
             finish();
+            maxMember = 0;
             return;
         }
         showConfirmCloseLayout();
@@ -174,9 +175,10 @@ public class LiveAnchorActivity extends LiveBaseActivity {
         ImageView closeConfirmView =
                 (ImageView) liveEndView.findViewById(R.id.img_finish_confirmed);
         TextView watchedCountView = (TextView) liveEndView.findViewById(R.id.txt_watched_count);
-        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
+        EaseUserUtils.setAppUserNick(LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick(), usernameView);
         EaseUserUtils.setAppUserAvatar(LiveAnchorActivity.this,EMClient.getInstance().getCurrentUser(),avatar);
-        watchedCountView.setText(watchedCount + "人看过");
+        watchedCountView.setText(maxMember + "人看过");
+
 
         liveContinueBtn.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {

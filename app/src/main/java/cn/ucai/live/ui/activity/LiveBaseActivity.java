@@ -85,6 +85,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
     protected int watchedCount;
     protected int membersCount;
+    protected int maxMember = 0;
 
 
     /**
@@ -105,6 +106,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     protected EMChatRoom chatroom;
     private static final int MAX_SIZE = 10;
     LinkedList<String> memberList = new LinkedList<>();
+
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -462,6 +464,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         watchedCount++;
         if (!memberList.contains(name)) {
             membersCount++;
+            maxMember = membersCount > maxMember ? membersCount : maxMember;
             if(memberList.size() >= MAX_SIZE)
                 memberList.removeLast();
             memberList.addFirst(name);

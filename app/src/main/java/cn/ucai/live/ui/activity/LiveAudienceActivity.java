@@ -1,10 +1,14 @@
 package cn.ucai.live.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -35,6 +39,7 @@ import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.domain.User;
+import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.exceptions.HyphenateException;
 import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
@@ -279,10 +284,48 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
                 int giftId =(int) v.getTag();
                 LiveHelper.getInstance().setGiftBillMap(giftId);
                 L.e(TAG,"LiveAudienceActivity.giftList....gift="+giftId);
-                onPresentImage(giftId,LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
+                showSendDialogPro(giftId);
             }
         });
         dialog.show(getSupportFragmentManager(), "GiftManagementDialog");
+    }
+
+    private void showSendDialogPro(int giftId) {
+        if (EasePreferenceManager.getInstance().getIsShowDialog()) {
+            onPresentImage(giftId, LiveHelper.getInstance()
+                    .getCurrentAppUserInfo().getMUserNick());
+        } else {
+            showSendDialog(giftId);
+        }
+    }
+
+    private void showSendDialog(final int giftId) {
+        Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
+        CheckBox cb = new CheckBox(this);
+        cb.setText("不再显示");
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setTitle("提示")
+                .setMessage("你确定要打赏主播" + gift.getGname() + "吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onPresentImage(giftId, LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
+                    }
+                })
+                .setView(cb)
+                .show();
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                EasePreferenceManager.getInstance().setIsShowDialog(isChecked);
+            }
+        });
     }
     /**
      * 点赞
